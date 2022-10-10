@@ -1,0 +1,9 @@
+#popWindow{
+    z-index: -1;
+    position: absolute;
+}
+#root{
+    position: relative;
+    z-index: 1;
+}
+
