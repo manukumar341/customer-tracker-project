@@ -1,10 +1,13 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable @typescript-eslint/no-redeclare */
 import React,{useState} from 'react'
-
+import {Div,ParentDiv,PlusBtn,Input,CommentInputDiv} from './CardComments'
 import styled from "styled-components";
 import { useDrag } from 'react-dnd';
-import {Itask} from "./DbConnector"
+import {Itask,IdragItem,ICardIdentifier} from "../DbConnector"
 import CardComments from './CardComments';
-import CardCommentsContainer from './CardCommentsContainer';
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
 
 type fun = (
     arr: Array<Itask>
@@ -12,23 +15,20 @@ type fun = (
     React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
   >;
 
-function Cards({obj}:{obj:Itask}) {
-const [cardToggle, setCardToggle] = useState(false)
-const handleOnclick=(event: HTMLDivElement)=>{
-  cardToggle?setCardToggle(false):setCardToggle(true);
-  // if(cardToggle){ 
-  //   setCardToggle(false) 
-  //   return <CardComments text={obj}/>
-  //   }else{
-  //     setCardToggle(true)
-  //   return <CardComments text={obj}/>
-  //   }
-}
+function Cards({obj,handleOnclick,cardIdentifaction}:{obj:Itask,handleOnclick:()=>void,cardIdentifaction: ICardIdentifier}) {
 
 const status=obj.status;
 const id=obj.id;
-    
-    const [{isDragging}, drag] = useDrag(() => ({
+const handleOnclickHere=(e: HTMLDivElement):void=>{
+cardIdentifaction.id=parseInt(e.id);
+cardIdentifaction.status=status;
+cardIdentifaction.toggal=true;
+handleOnclick();
+console.log(cardIdentifaction)
+}    
+const ar=['aaaaa','bbbbbb','ccc']
+const [array, setarray] = useState([ar])
+    const [, drag] = useDrag(() => ({
         item:{
             status:status,
             id:id
@@ -38,40 +38,61 @@ const id=obj.id;
           isDragging: !!monitor.isDragging(),
         }),
       }),[]);  
-      const fun=()=>{
-        console.log('hhhhhh');
-        
-        if(cardToggle){ 
-          setCardToggle(false) 
-          return <CardComments text={obj}/>
-          }else{
-            setCardToggle(true)
-          return <CardComments text={obj}/>
-
-          }
+      let vl:string='';
+      const handleOnchangeCmt=(e:string)=>{
+vl=e;
       } 
+
+      const handleOnclickCmtBtn=()=>{
+        ar.push(vl)
+        setarray((preval)=>[...preval,ar])
+      }
+      let comm=array.map((item)=>{
+        return (<h5>{item}<br/></h5>);
+      }) 
           return (
-            <>
-            <Card ref={drag} className={status[0]} id={id.toString()} onClick={e=>handleOnclick(e.target as HTMLDivElement)}>
-              <CardTitle >
-                {obj.task}
-                <CardProfileImg
-                  src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-                  alt="avtar"
-                />
-              </CardTitle>
-              <CardDiscription  >{obj.description}</CardDiscription>
-              <CardPriority  >{obj.priority}</CardPriority>
-            </Card>
-       {cardToggle?<CardComments text={obj}/>:null}
-       {/* {cardToggle?<CardCommentsContainer text={obj}/>:null} */}
+            
        
-              </>              
+              <Popup trigger={
+                <Card  ref={drag} id={id.toString()} onClick={(e)=>{handleOnclickHere(e.target as HTMLDivElement)}}>
+                <CardTitle id={id.toString()}>
+                  {obj.task}
+                  <CardProfileImg
+                    src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                    alt="avtar"
+                  />
+                </CardTitle >
+                <CardDiscription id={id.toString()} >{obj.description}</CardDiscription>
+                <CardPriority  id={id.toString()}>{obj.priority}</CardPriority>
+  
+              </Card>
+              } position="top left">
+              {/* <ParentDiv> */}
+                {/* <Div > */}           
+                  <h2>Comments</h2>
+             {comm}
+             <CommentInputDiv>
+          <Input type="text" onChange={(e)=>handleOnchangeCmt(e.target.value)} />
+          <PlusBtn  onClick={handleOnclickCmtBtn}>Add</PlusBtn>
+         </CommentInputDiv>
+                {/* </Div> */}
+              {/* </ParentDiv> */}
+</Popup>
+                  
           );
-     
-
-}
-
+          
+          
+        }
+        
+        // {/* <ParentDiv>
+        // <Div>
+        // <CommentInputDiv>
+        //   <Input type="text"  />
+        //   <PlusBtn  onClick={handleOnclick}>Add</PlusBtn>
+        //     // {/* <h3> Lets go for a <FaBeer /></h3> */}
+        // // </CommentInputDiv>
+        // // </Div>
+        // // </ParentDiv> */}
 export default Cards
 
 /* background-color: ${(props)=>{props.color}}; */

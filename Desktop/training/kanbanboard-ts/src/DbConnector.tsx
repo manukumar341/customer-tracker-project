@@ -1,4 +1,11 @@
 /* eslint-disable array-callback-return */
+export interface IdragItem{
+  id:number,
+  status:TaksStatus,
+}
+export interface ICardIdentifier extends IdragItem{
+  toggal:boolean;
+}
 
 
 export interface Itask {

@@ -1,27 +1,22 @@
-import dbConnector, { IDataArr,Itask,TaksStatus } from "./DbConnector";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable array-callback-return */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+import dbConnector, { IDataArr,Itask,TaksStatus,IdragItem,ICardIdentifier } from "../DbConnector";
 import { useDrop } from "react-dnd";
 import styled from "styled-components";
 import Cards from "./Cards";
 import {useCallback , useState} from 'react'
-
-
-
-
+import CardComments from './CardComments';
 interface IReturnType {
   setObjState: () => void;
   insertDataToDB: (obj: Itask) => void;
   updateDB: (id: number, currentState: TaksStatus, targetState: TaksStatus) => void;
 }
-
-
 interface IFun{
   DataHandler:()=>IReturnType;
 }
 
-
-
 type FunctionReturn=()=>ReturnedFun
- 
 
 
 interface ReturnedFun{
@@ -34,38 +29,20 @@ interface ReturnObject {
   boardArr:IDataArr
 }
 
-interface IdragItem{
-  id:number,
-  status:TaksStatus
-}
 
-// function CardsContainer({ obj ,DataHandler}: { obj: IDataArr ,DataHandler:FunctionReturn}) {
+
+
+
 function CardsContainer({ obj }: { obj: IDataArr }) {
+  const cardIdentifaction:ICardIdentifier={id:0,status:'requested',toggal:false};
+  const [cardToggle, setCardToggle] = useState(false)
+  const cardStatus=obj[cardIdentifaction.status];
 
-  // const dropCard = useCallback(
-  //   (id, targetStatus, currentStatus) => {
-  //     let count=0;
-  //     arrStore.boardArr[currentStatus].map((element) => {
-  //       if (element.id === id) {
-  //         element.status = targetStatus;
-  //         arrStore.boardArr[targetStatus].push(element)
-  //         arrStore.boardArr[currentStatus].splice(count,1);
-  //         console.log(arrStore);
-  //         // delete arrStore.boardArr[currentStatus][count];
-  //       }else{
-  //         count+=1;
-  //       }
-  //       return element;
-  //     });
-  //     setArrStore(arrStore);
-  //   },
-  //   [arrStore]
-  // );
-// const [cardToggle, setCardToggle] = useState(false)
-// const cardToggleFun=()=>{
-//   cardToggle?setCardToggle(false):setCardToggle(true);
-// }
-  
+const handleOnclick=()=>{
+  cardToggle?setCardToggle(false):setCardToggle(true);
+}
+console.log(cardStatus)
+
   const [, dropInpor] = useDrop(
     () => ({
       accept: "card",
@@ -82,10 +59,8 @@ function CardsContainer({ obj }: { obj: IDataArr }) {
         isOver: !!monitor.isOver(),
       }),
     }),
-    // [dropCard]
     []
   );
-
   const [, dropReq] = useDrop(
     () => ({
       accept: "card",
@@ -101,7 +76,6 @@ function CardsContainer({ obj }: { obj: IDataArr }) {
         isOver: !!monitor.isOver(),
       }),
     }),
-    // [dropCard]
     []
   );
   const [, dropCom] = useDrop(
@@ -118,10 +92,12 @@ function CardsContainer({ obj }: { obj: IDataArr }) {
         isOver: !!monitor.isOver(),
       }),
     }),
-    // [dropCard]
     []
   );
+
+
   return (
+    <>
     <StyledDiv>
       {/* drop here */}
       <StyledCardContainer ref={dropReq} > 
@@ -132,7 +108,7 @@ function CardsContainer({ obj }: { obj: IDataArr }) {
           <StyledProgressIndicator color="gray" />
         </ProgressIndicatorParent>
         {obj.requested.map((Element)=>{
-          return (<Cards obj={Element} key={Element.id}  />)
+          return (<Cards obj={Element} key={Element.id} handleOnclick={handleOnclick} cardIdentifaction={cardIdentifaction}/>)
         })}
       </StyledCardContainer>
       <StyledCardContainer ref={dropInpor} >
@@ -144,7 +120,7 @@ function CardsContainer({ obj }: { obj: IDataArr }) {
         </ProgressIndicatorParent>
         {obj.inprogress.map((Element)=>{
           // return (<Cards obj={Element} key={Element.id}  cardToggle={cardToggle} cardToggleFun={cardToggleFun}/>)
-          return (<Cards obj={Element} key={Element.id}  />)
+          return (<Cards obj={Element} key={Element.id} handleOnclick={handleOnclick}   cardIdentifaction={cardIdentifaction} />)
 
         })}
       </StyledCardContainer>
@@ -157,10 +133,23 @@ function CardsContainer({ obj }: { obj: IDataArr }) {
         </ProgressIndicatorParent>
         {/* <Cards arr={obj.completed}/> */}
         {obj.completed.map((Element)=>{
-          return (<Cards obj={Element} key={Element.id}  />)
+          return (<Cards obj={Element} key={Element.id}  handleOnclick={handleOnclick}  cardIdentifaction={cardIdentifaction}/>)
         })}
       </StyledCardContainer>
+     
+      {/* {cardToggle?<CardComments  title={obj[cardIdentifaction.status]}  description={} text={arr}/>:null} */}
     </StyledDiv>
+     {
+     cardStatus.map((element,index)=>{
+      console.log(element)
+      if(element.id===cardIdentifaction.id){
+        const cardObj=obj[cardIdentifaction.status][index];
+
+        return (<CardComments  title={cardObj.task}  description={cardObj.description} commentsArr={cardObj.comment as string[]}/>)
+      }
+      })
+     }
+      </>
   );
 }
 

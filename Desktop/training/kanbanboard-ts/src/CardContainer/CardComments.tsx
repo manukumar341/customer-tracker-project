@@ -4,14 +4,15 @@ import { FaBeer } from "@react-icons/all-files/fa/FaBeer";
 import React, { useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
-import dbConnector, { Itask } from "./DbConnector";
+import dbConnector, { Itask, } from "../DbConnector";
 
-let newCommentValue: string = "";
-function CardComments({ text }: { text: Itask }) {
-  const portal: HTMLElement = document.getElementById(
-    "cardComments"
-  ) as HTMLElement;
-  const [comments, setComments] = useState<string[]>([]);
+let newCommentValue: string = ""; 
+
+
+function CardComments({ commentsArr,title,description }: { commentsArr: string[],title:string,description:string }) {
+  const portal: HTMLElement = document.getElementById("cardComments") as HTMLElement;
+
+  const [comments, setComments] = useState<string[]>(commentsArr);
 
 
   const handleOnchange = (val: string) => {
@@ -19,10 +20,10 @@ function CardComments({ text }: { text: Itask }) {
   };
 console.log(newCommentValue)
   const handleOnclick = () => {
-    text.comment?.push(newCommentValue);
+    // text.comment?.push(newCommentValue);
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     newCommentValue
-    ? setComments((preState) => [...preState, newCommentValue])
+    ? setComments( [ newCommentValue])
     : "";
     // dbConnector().saveComment(text.id,text.status,newCommentValue)
 };
@@ -50,24 +51,23 @@ console.log(newCommentValue)
     return commentsArr;
   };
 
-const handleCommentsDelete=(id: string)=>{
-
-    const num=parseInt(id)
-    let count=0;
-dbConnector().deleteComment(text.id,newCommentValue,text.status)
-// text.comment?.splice(num/3,1);
-
-    
-}
+// const handleCommentsDelete=(id: string)=>{
+//     const num=parseInt(id)
+//     let count=0;
+// dbConnector().deleteComment(text.id,newCommentValue,text.status)
+// // text.comment?.splice(num/3,1);   
+// }
   return ReactDOM.createPortal(
 <ParentDiv>
       <Div >
-        <h4>{text.task}</h4>
-        <p>{text.description}</p>
+        <h4>{title}</h4>
+        <p>{description}</p>
         <h2>Comments</h2>
-        {text.comment?.map((element,index) => {
-          return <p key={index*3} id={(index*3).toString()} className={text.status}  onClick={(e) => {
-            handleCommentsDelete((e.target as HTMLParagraphElement).id);
+        {comments.map((element,index) => {
+          return <p key={index*3} id={(index*3).toString()}   onClick={(e) => {
+            // handleCommentsDelete((e.target as HTMLParagraphElement).id);
+            console.log('clicked');
+            
           }}>{element}</p>;
         })}
         {/* {addComments()} */}
@@ -88,21 +88,21 @@ dbConnector().deleteComment(text.id,newCommentValue,text.status)
 
 export default CardComments;
 
-const ParentDiv = styled.div`
+export const ParentDiv = styled.div`
 
-  z-index: 2;
+  /* z-index: 2;
   justify-content: flex-start;
 
 justify-items: center;
 align-items: center;
 justify-self: center;
-       align-content: center;
+       align-content: center; */
   /* justify-content: center; */
 
 
 `;
 
-const Comments = styled.p`
+export const Comments = styled.p`
   border: 1px solid black;
   border-radius: 5px;
   margin: 7px;
@@ -113,11 +113,12 @@ const Comments = styled.p`
   word-break: break-word;
 `;
 
-const Div = styled.div`
+export const Div = styled.div`
 margin-top: 18px;
 margin-left: 400px;
   border-radius: 10px;
-  width: 600px;
+  /* width: 600px; */
+  width: 300px;
   height: auto;
   border: solid 1px #555;
   background-color: #eed;
@@ -127,27 +128,27 @@ margin-left: 400px;
   -o-box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
 `;
 
-const IDiv= styled.div`
-margin-left: 190px;
+export const IDiv= styled.div`
+/* margin-left: 190px; */
 justify-items: center;
 align-items: center;
 justify-self: center;
        align-content: center;
 `
-const CommentInputDiv = styled.div`
+export const CommentInputDiv = styled.div`
   border-radius: 15px;
   border: 1px solid black;
-  width: 235px;
+  width: 233px;
 `;
 
-const Input = styled.input`
+export const Input = styled.input`
   padding: 5px;
   border-radius: 15px;
   border: none;
   outline: none;
 `;
 
-const PlusBtn = styled.button`
+export const PlusBtn = styled.button`
   border: none;
   border-radius: 16px;
   font-weight: bolder;
