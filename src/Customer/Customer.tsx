@@ -1,18 +1,18 @@
-import Customer from './Customer';
+import Customers from './Customers';
 import { Outlet } from 'react-router-dom';
 import Search from '../Components/Search/Search'
 
 
 //pass all user and credit, debit, dates as props*************
 
-function Customers() {
+function Customer() {
   return (
     <div>
-<Search/>
-<Customer/>
+{/* <Search/> */}
+<Customers/>
 
     </div>
   )
 }
 
-export default Customers
+export default Customer
