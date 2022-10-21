@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./DashboardComponent/Home";
 import DefaultPage from "./DashboardComponent/DefaultPage";
 import About from "./DashboardComponent/About";
-import Customers from "./Components/Customers/Customers";
+import Customers from "./Customers/Customers";
 import TransactionsReport from "./Components/TransactionsReport/TransactionsReport";
 
 function App() {
